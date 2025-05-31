@@ -21,10 +21,10 @@ public class Terrain {
 	public float groundHeightAt(float x) { return groundHeightAtX0; }
 
 	public List<Block> createInRange(int minX, int maxX) {
-		Renderable rend =new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR));
-		Vector2 v=new Vector2(100,groundHeightAt(100));
-		Block block=new Block(v, rend);
-		List<Block> lst=new ArrayList<>();
+		Renderable rend = new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR));
+		Vector2 v = new Vector2(100, groundHeightAt(100));
+		Block block = new Block(v, rend);
+		List<Block> lst = new ArrayList<>();
 		lst.add(block);
 		return lst;
 	}
