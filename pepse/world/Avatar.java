@@ -12,17 +12,23 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Avatar extends GameObject{
-	private static final float VELOCITY_X = 300;
-	private static final float VELOCITY_Y = -600;
-	private static final float GRAVITY = 600;
+/**
+ * Represents the player-controlled avatar in the game.
+ * The avatar can move left, right, and jump based on user input,
+ * and its visual state (idle, run, jump) is animated accordingly.
+ * It also consumes and regenerates energy based on actions.
+ */
+public class Avatar extends GameObject {
+	private static final float VELOCITY_X = 400;
+	private static final float VELOCITY_Y = -400;
+	private static final float GRAVITY = 300;
 
-	public static final float AVATAR_WIDTH = 30;
-	public static final float AVATAR_HEIGHT = 30;
+	public static final float AVATAR_WIDTH = 60;
+	public static final float AVATAR_HEIGHT = 60;
 	private static final double TIME_BETWEEN_CLIPS = 0.5;
 
 	private UserInputListener inputListener;
-	AnimationRenderable idleAnimation, runAnimation,jumpAnimation;
+	AnimationRenderable idleAnimation, runAnimation, jumpAnimation;
 
 	private AvatarState avatarState;
 	private float energy;
@@ -30,95 +36,106 @@ public class Avatar extends GameObject{
 	private final List<AvatarListener> jumpListeners = new ArrayList<>();
 
 	/**
-	 * Construct a new GameObject instance.
+	 * Constructs a new Avatar instance.
 	 *
-	 * @param topLeftCorner Position of the object, in window coordinates (pixels).
-	 *                      Note that (0,0) is the top-left corner of the window.
-	 * @param inputListener  input from user.
-	 * @param imageReader   reader for image of avatar.
+	 * @param topLeftCorner The top-left position of the avatar in world coordinates.
+	 * @param inputListener User input listener for handling movement and jumping.
+	 * @param imageReader Used to load animation frames for different avatar states.
 	 */
 	public Avatar(Vector2 topLeftCorner, UserInputListener inputListener, ImageReader imageReader) {
 		super(topLeftCorner,
-				new Vector2(AVATAR_WIDTH,AVATAR_HEIGHT),
+				new Vector2(AVATAR_WIDTH, AVATAR_HEIGHT),
 				imageReader.readImage("assets/idle_0.png", false));
 
 		physics().preventIntersectionsFromDirection(Vector2.ZERO);
 		transform().setAccelerationY(GRAVITY);
 		this.inputListener = inputListener;
 
-		Renderable[] idleImages = {imageReader.readImage("assets/idle_0.png", false),
-									imageReader.readImage("assets/idle_1.png", false),
-									imageReader.readImage("assets/idle_2.png", false),
-									imageReader.readImage("assets/idle_3.png", false),};
-		this.idleAnimation = new AnimationRenderable(idleImages,TIME_BETWEEN_CLIPS);
+		Renderable[] idleImages = {
+				imageReader.readImage("assets/idle_0.png", false),
+				imageReader.readImage("assets/idle_1.png", false),
+				imageReader.readImage("assets/idle_2.png", false),
+				imageReader.readImage("assets/idle_3.png", false)
+		};
+		this.idleAnimation = new AnimationRenderable(idleImages, TIME_BETWEEN_CLIPS);
 
-		Renderable[] runImages = {imageReader.readImage("assets/run_0.png", false),
+		Renderable[] runImages = {
+				imageReader.readImage("assets/run_0.png", false),
 				imageReader.readImage("assets/run_1.png", false),
 				imageReader.readImage("assets/run_2.png", false),
 				imageReader.readImage("assets/run_3.png", false),
 				imageReader.readImage("assets/run_4.png", false),
-				imageReader.readImage("assets/run_5.png", false),};
-		this.runAnimation = new AnimationRenderable(runImages,TIME_BETWEEN_CLIPS);
+				imageReader.readImage("assets/run_5.png", false)
+		};
+		this.runAnimation = new AnimationRenderable(runImages, TIME_BETWEEN_CLIPS);
 
-		Renderable[] jumpImages = {imageReader.readImage("assets/jump_0.png", false),
+		Renderable[] jumpImages = {
+				imageReader.readImage("assets/jump_0.png", false),
 				imageReader.readImage("assets/jump_1.png", false),
 				imageReader.readImage("assets/jump_2.png", false),
-				imageReader.readImage("assets/jump_3.png", false),};
-		this.jumpAnimation = new AnimationRenderable(idleImages,TIME_BETWEEN_CLIPS);
+				imageReader.readImage("assets/jump_3.png", false)
+		};
+		this.jumpAnimation = new AnimationRenderable(idleImages, TIME_BETWEEN_CLIPS); // Intentional reuse?
 
 		this.avatarState = AvatarState.idle;
 		this.energy = 100;
 	}
 
+	/**
+	 * Updates the avatar's physics, animations, and state transitions based on user input.
+	 *
+	 * @param deltaTime The time passed since the last update (in seconds).
+	 */
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
 		float xVel = 0;
 		boolean doneAction = false;
 		boolean moveLeft = false;
-		if(inputListener.isKeyPressed(KeyEvent.VK_LEFT) && !(inputListener.isKeyPressed(KeyEvent.VK_RIGHT))
-			&& this.energy >= 0.5) {
+
+		if (inputListener.isKeyPressed(KeyEvent.VK_LEFT) &&
+				!inputListener.isKeyPressed(KeyEvent.VK_RIGHT) &&
+				this.energy >= 0.5) {
 			xVel -= VELOCITY_X;
 			this.avatarState = AvatarState.run;
 			moveLeft = true;
 			doneAction = true;
 		}
-		if(inputListener.isKeyPressed(KeyEvent.VK_RIGHT) && !(inputListener.isKeyPressed(KeyEvent.VK_LEFT)
-				&& this.energy >= 0.5)) {
+
+		if (inputListener.isKeyPressed(KeyEvent.VK_RIGHT) &&
+				!(inputListener.isKeyPressed(KeyEvent.VK_LEFT) && this.energy >= 0.5)) {
 			xVel += VELOCITY_X;
 			this.avatarState = AvatarState.run;
 			doneAction = true;
 		}
+
 		transform().setVelocityX(xVel);
-		if(inputListener.isKeyPressed(KeyEvent.VK_SPACE) && getVelocity().y() == 0
-				&& this.energy >= 10) {
+
+		if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) &&
+				getVelocity().y() == 0 &&
+				this.energy >= 10) {
 			transform().setVelocityY(VELOCITY_Y);
 			this.avatarState = AvatarState.jump;
 			doneAction = true;
 			notifyJump();
 		}
-		if (!doneAction && getVelocity().y() == 0 && getVelocity().x() == 0){
+
+		if (!doneAction && getVelocity().y() == 0 && getVelocity().x() == 0) {
 			this.avatarState = AvatarState.idle;
 		} else if (!doneAction) {
 			this.avatarState = AvatarState.neither;
 		}
 
-
 		switch (avatarState) {
 			case idle:
 				renderer().setRenderable(idleAnimation);
-				if(this.energy<100){
+				if (this.energy < 100) {
 					addEnergy(1);
 				}
 				break;
 			case run:
 				renderer().setRenderable(runAnimation);
-				if (moveLeft){
-					renderer().setIsFlippedHorizontally(true);
-				}
-				else {
-					renderer().setIsFlippedHorizontally(false);
-				}
+				renderer().setIsFlippedHorizontally(moveLeft);
 				subEnergy(0.5f);
 				break;
 			case jump:
@@ -129,27 +146,63 @@ public class Avatar extends GameObject{
 				break;
 		}
 	}
+
+	/**
+	 * Adds energy to the avatar up to a maximum of 100.
+	 *
+	 * @param addition Amount of energy to add.
+	 */
 	public void addEnergy(float addition) {
-		this.energy = Math.min(this.energy+addition,100);
-	}
-	public void subEnergy(float subtruct) {
-		this.energy = Math.max(this.energy-subtruct,0);
+		this.energy = Math.min(this.energy + addition, 100);
 	}
 
+	/**
+	 * Subtracts energy from the avatar down to a minimum of 0.
+	 *
+	 * @param subtruct Amount of energy to subtract.
+	 */
+	public void subEnergy(float subtruct) {
+		this.energy = Math.max(this.energy - subtruct, 0);
+	}
+
+	/**
+	 * Returns the current energy level of the avatar.
+	 *
+	 * @return Current energy level, between 0 and 100.
+	 */
+	public float getEnergy() {
+		return energy;
+	}
+
+	/**
+	 * Handles collisions. If the avatar touches the ground, vertical velocity is reset to zero.
+	 *
+	 * @param other     The GameObject the avatar collided with.
+	 * @param collision Collision details.
+	 */
 	@Override
 	public void onCollisionEnter(GameObject other, Collision collision) {
 		super.onCollisionEnter(other, collision);
-		if(other.getTag().equals("ground")){
+		if (other.getTag().equals("ground")) {
 			this.transform().setVelocityY(0);
 		}
 	}
+
+	/**
+	 * Registers a listener to be notified when the avatar jumps.
+	 *
+	 * @param listener An AvatarListener to add.
+	 */
 	public void addListener(AvatarListener listener) {
 		jumpListeners.add(listener);
 	}
+
+	/**
+	 * Notifies all registered listeners that the avatar has jumped.
+	 */
 	private void notifyJump() {
 		for (AvatarListener listener : jumpListeners) {
 			listener.onJump();
 		}
 	}
 }
-

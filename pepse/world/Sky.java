@@ -7,10 +7,20 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
+/**
+ * Represents the sky in the game world.
+ */
 public class Sky {
 
 	private static final Color BASIC_SKY_COLOR = Color.decode("#80C6E5");
 
+	/**
+	 * Creates a sky GameObject with the specified window dimensions.
+	 * The sky uses camera coordinates and is rendered as a blue rectangle.
+	 *
+	 * @param windowDimensions The dimensions of the window in which the sky should be displayed.
+	 * @return A GameObject representing the sky.
+	 */
 	public static GameObject create(Vector2 windowDimensions){
 		GameObject sky = new GameObject(Vector2.ZERO, windowDimensions,
 				new RectangleRenderable(BASIC_SKY_COLOR));
