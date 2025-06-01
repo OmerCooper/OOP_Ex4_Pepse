@@ -5,6 +5,7 @@ import danogl.components.ScheduledTask;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.OvalRenderable;
 import danogl.util.Vector2;
+import pepse.util.ColorSupplier;
 import pepse.util.Transition;
 import pepse.world.Block;
 import pepse.world.Terrain;
@@ -12,6 +13,7 @@ import pepse.world.Terrain;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class Flora {
@@ -21,23 +23,26 @@ public class Flora {
 	private static final int BLOCK_SIZE = Block.SIZE;
 	private static final int LEAF_SIZE = BLOCK_SIZE;
 	private static final float LEAF_SIZE_CHANGE = 1.1f;
-	private static final float LEAF_ANGLE_CHANGE = 10f;
+	private static final float LEAF_ANGLE_CHANGE = 15f;
 	private static final int TRUNK_WIDTH = BLOCK_SIZE;
-	private static final int MAX_TRUNK_HEIGHT = 6;
+	private static final int MAX_TRUNK_HEIGHT = 5;
 	private static final int MIN_TRUNK_HEIGHT = 3;
 	private static final float TREES_PROB = 0.1f;
-	private static final float LEAF_PROB = 0.7f;
+	private static final float LEAF_PROB = 0.8f;
 	private static final String  LEAF_TAG = "leaf";
 	private static final String  TRUNK_TAG = "trunk";
-	private static final Random random = new Random();
+	private Random random=new Random();
 	private Terrain terrain;
+	private int seed;
 
 	/**
 	 * constructor that just use the terrain
 	 * @param terrain .
 	 */
-	public Flora(Terrain terrain) {
+	public Flora(Terrain terrain, int seed) {
 		this.terrain = terrain;
+		this.seed=seed;
+
 	}
 
 	/**
@@ -52,10 +57,11 @@ public class Flora {
 		minX = (minX / BLOCK_SIZE) * BLOCK_SIZE;
 		maxX = (maxX / BLOCK_SIZE) * BLOCK_SIZE;
 		for (int x = minX; x < maxX; x += BLOCK_SIZE) {
-			if (random.nextFloat() > TREES_PROB) continue; // create trees sparsely
+			Random random1=new Random(Objects.hash(x, seed));
+			if (random1.nextFloat() > TREES_PROB) continue; // create trees sparsely
 
 			float groundHeight = terrain.groundHeightAt(x);
-			int trunkHeight = MIN_TRUNK_HEIGHT + random.nextInt(MAX_TRUNK_HEIGHT+1 - MIN_TRUNK_HEIGHT);
+			int trunkHeight = MIN_TRUNK_HEIGHT + random1.nextInt(MAX_TRUNK_HEIGHT+1 - MIN_TRUNK_HEIGHT);
 
 			// Create trunk
 			for (int i = 1; i <= trunkHeight; i++) {
@@ -74,14 +80,14 @@ public class Flora {
 					yPos=leafStartY + dy * LEAF_SIZE;
 					Vector2 leafPos = new Vector2(xPos,yPos );
 					// create fruits where there are no leaves in high prob
-					if (random.nextFloat() > LEAF_PROB) {
-						if (random.nextFloat() < LEAF_PROB){
+					if (random1.nextFloat() > LEAF_PROB) {
+						if (random1.nextFloat() < LEAF_PROB){
 							treeParts.add(FruitFactory.createFruit(leafPos));
 						}
 					}
 					else {
 						GameObject leaf = new GameObject(leafPos, new Vector2(LEAF_SIZE, LEAF_SIZE),
-								new RectangleRenderable(LEAF_COLOR));
+								new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR)));
 						leaf.setTag(LEAF_TAG);
 						animateLeafWithSwing(leaf);
 						animateLeafWithSizeChange(leaf);
@@ -94,12 +100,12 @@ public class Flora {
 	}
 
 
-	public static void animateLeafWithSwing(GameObject leaf) {
+	private void animateLeafWithSwing(GameObject leaf) {
 		float delay = random.nextFloat(); // random deley
 		float interval = 0.02f; // the animation interval
 		float cycleLength = 2f; // the full cycle of the animation
 
-		float[] t = {random.nextFloat()};
+		float[] t = {this.random.nextFloat()};
 		boolean[] forward = {true};
 
 		new ScheduledTask(leaf, delay, false, () -> {
@@ -114,14 +120,14 @@ public class Flora {
 						t[0],
 						(angle, ignoredForward) -> leaf.renderer().setRenderableAngle(angle),
 						-LEAF_ANGLE_CHANGE,
-						-LEAF_ANGLE_CHANGE,
+						LEAF_ANGLE_CHANGE,
 						forward[0]
 				);
 			});
 		});
 	}
 
-	public static void animateLeafWithSizeChange (GameObject leaf) {
+	private void animateLeafWithSizeChange (GameObject leaf) {
 		float delay = random.nextFloat() * 1f;
 		float interval = 0.02f;
 		float cycleLength = 2f;

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Avatar extends GameObject{
 	private static final float VELOCITY_X = 300;
-	private static final float VELOCITY_Y = -350;
+	private static final float VELOCITY_Y = -600;
 	private static final float GRAVITY = 600;
 
 	public static final float AVATAR_WIDTH = 30;
