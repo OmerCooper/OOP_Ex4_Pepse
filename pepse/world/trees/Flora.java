@@ -5,6 +5,7 @@ import danogl.components.ScheduledTask;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.OvalRenderable;
 import danogl.util.Vector2;
+import pepse.util.ColorSupplier;
 import pepse.util.Transition;
 import pepse.world.Block;
 import pepse.world.Terrain;
@@ -60,7 +61,7 @@ public class Flora {
 			if (random1.nextFloat() > TREES_PROB) continue; // create trees sparsely
 
 			float groundHeight = terrain.groundHeightAt(x);
-			int trunkHeight = MIN_TRUNK_HEIGHT + random.nextInt(MAX_TRUNK_HEIGHT+1 - MIN_TRUNK_HEIGHT);
+			int trunkHeight = MIN_TRUNK_HEIGHT + random1.nextInt(MAX_TRUNK_HEIGHT+1 - MIN_TRUNK_HEIGHT);
 
 			// Create trunk
 			for (int i = 1; i <= trunkHeight; i++) {
@@ -86,7 +87,7 @@ public class Flora {
 					}
 					else {
 						GameObject leaf = new GameObject(leafPos, new Vector2(LEAF_SIZE, LEAF_SIZE),
-								new RectangleRenderable(LEAF_COLOR));
+								new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR)));
 						leaf.setTag(LEAF_TAG);
 						animateLeafWithSwing(leaf);
 						animateLeafWithSizeChange(leaf);

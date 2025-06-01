@@ -4,6 +4,7 @@ import danogl.GameObject;
 import danogl.components.ScheduledTask;
 import danogl.gui.rendering.OvalRenderable;
 import danogl.util.Vector2;
+import pepse.util.ColorSupplier;
 import pepse.world.Block;
 
 import java.awt.*;
@@ -34,7 +35,7 @@ public class FruitFactory {
 	public static void eatFruit(GameObject fruit) {
 		fruit.renderer().setRenderable(null); // Hide the fruit
 		new ScheduledTask(fruit, REGENERATE_TIMER, false, () -> {
-			fruit.renderer().setRenderable(new OvalRenderable(FRUIT_COLOR));
+			fruit.renderer().setRenderable(new OvalRenderable(ColorSupplier.approximateColor(FRUIT_COLOR)));
 		});
 	}
 }
