@@ -26,7 +26,7 @@ public class Flora {
 	private static final int MAX_TRUNK_HEIGHT = 6;
 	private static final int MIN_TRUNK_HEIGHT = 3;
 	private static final float TREES_PROB = 0.1f;
-	private static final float LEAF_PROB = 0.7f;
+	private static final float LEAF_PROB = 0.8f;
 	private static final String  LEAF_TAG = "leaf";
 	private static final String  TRUNK_TAG = "trunk";
 	private static final Random random = new Random();

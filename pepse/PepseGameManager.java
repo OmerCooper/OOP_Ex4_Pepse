@@ -53,7 +53,6 @@ public class PepseGameManager extends GameManager {
 		setCamera(new Camera(avatar, Vector2.ZERO,
 				windowController.getWindowDimensions(),
 				windowController.getWindowDimensions()));
-
 		gameObjects().addGameObject(avatar, Layer.DEFAULT);
 
 		//Cloud
