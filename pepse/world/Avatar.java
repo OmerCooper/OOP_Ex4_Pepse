@@ -9,6 +9,8 @@ import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Avatar extends GameObject{
 	private static final float VELOCITY_X = 300;
@@ -24,6 +26,8 @@ public class Avatar extends GameObject{
 
 	private AvatarState avatarState;
 	private float energy;
+
+	private final List<AvatarListener> jumpListeners = new ArrayList<>();
 
 	/**
 	 * Construct a new GameObject instance.
@@ -91,6 +95,7 @@ public class Avatar extends GameObject{
 			transform().setVelocityY(VELOCITY_Y);
 			this.avatarState = AvatarState.jump;
 			doneAction = true;
+			notifyJump();
 		}
 		if (!doneAction && getVelocity().y() == 0 && getVelocity().x() == 0){
 			this.avatarState = AvatarState.idle;
@@ -138,8 +143,13 @@ public class Avatar extends GameObject{
 			this.transform().setVelocityY(0);
 		}
 	}
-	public boolean jumped(){
-		return this.avatarState==AvatarState.jump;
+	public void addListener(AvatarListener listener) {
+		jumpListeners.add(listener);
 	}
-
+	private void notifyJump() {
+		for (AvatarListener listener : jumpListeners) {
+			listener.onJump();
+		}
+	}
 }
+

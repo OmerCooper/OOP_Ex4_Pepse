@@ -10,9 +10,6 @@ import java.awt.*;
 
 public class SunHalo {
 
-	private static final Color SUN__HALO_COLOR = Color.YELLOW;
-	private static final float INITIAL_ANGLE = 0;
-	private static final float FINAL_ANGLE = 360;
 	private static final int RED_COLOR_COMPOMENT = 255;
 	private static final int GREEN_COLOR_COMPOMENT = 255;
 	private static final int BLUE_COLOR_COMPOMENT = 0;

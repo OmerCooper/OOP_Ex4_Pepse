@@ -3,18 +3,18 @@ package pepse;
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
-import danogl.components.Transition;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
 import danogl.gui.rendering.Camera;
 import danogl.util.Vector2;
+import pepse.world.weather.Cloud;
 import pepse.world.*;
-import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
 import pepse.world.trees.Flora;
+import pepse.world.weather.Rain;
 
 public class PepseGameManager extends GameManager {
 	private static final float CYCLE_LENGTH_SEC = 30;
@@ -61,6 +61,13 @@ public class PepseGameManager extends GameManager {
 		for (Block b:cloud.create(windowController.getWindowDimensions())) {
 			gameObjects().addGameObject(b, Layer.BACKGROUND);
 		}
+		//Rain
+		Rain rain = new Rain(cloud,
+				(gameObject, layer) -> gameObjects().addGameObject(gameObject, layer),
+				gameObjects()::removeGameObject);
+		avatar.addListener(rain);
+
+
 		Flora flora = new Flora(terrain);
 
 		for(GameObject treePart : flora.createInRange(0, (int)windowController.getWindowDimensions().x())) {
