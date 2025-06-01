@@ -16,7 +16,7 @@ public class SunHalo {
 	private static final int RED_COLOR_COMPOMENT = 255;
 	private static final int GREEN_COLOR_COMPOMENT = 255;
 	private static final int BLUE_COLOR_COMPOMENT = 0;
-	private static final int ALPHA_COLOR_COMPOMENT = 50;
+	private static final int ALPHA_COLOR_COMPOMENT = 30;
 	private static final float SIZE_BIGGER_THEN_SUN = 50;
 
 	public static GameObject create(GameObject sun) {
