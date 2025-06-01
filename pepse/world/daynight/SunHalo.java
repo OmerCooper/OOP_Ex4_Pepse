@@ -16,7 +16,7 @@ public class SunHalo {
 	private static final int RED_COLOR_COMPOMENT = 255;
 	private static final int GREEN_COLOR_COMPOMENT = 255;
 	private static final int BLUE_COLOR_COMPOMENT = 0;
-	private static final int ALPHA_COLOR_COMPOMENT = 50;
+	private static final int ALPHA_COLOR_COMPOMENT = 30;
 	private static final float SIZE_BIGGER_THEN_SUN = 50;
 
 	public static GameObject create(GameObject sun) {
@@ -25,8 +25,8 @@ public class SunHalo {
 				sun.getDimensions().y()+SIZE_BIGGER_THEN_SUN);
 		GameObject sunHalo = new GameObject(initialSunHaloCenter, sunHaloSize, new OvalRenderable
 				(new Color(RED_COLOR_COMPOMENT,GREEN_COLOR_COMPOMENT,BLUE_COLOR_COMPOMENT,ALPHA_COLOR_COMPOMENT)));
-		sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-		sun.setTag("sunHalo");
+		sunHalo.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
+		sunHalo.setTag("sunHalo");
 		sunHalo.addComponent((deltaTime) ->sunHalo.setCenter(sun.getCenter()));
 		return sunHalo;
 	}
