@@ -9,6 +9,7 @@ import java.awt.*;
 
 /**
  * Represents the sky in the game world.
+ * @author omer and rotem
  */
 public class Sky {
 
@@ -21,7 +22,7 @@ public class Sky {
 	 * @param windowDimensions The dimensions of the window in which the sky should be displayed.
 	 * @return A GameObject representing the sky.
 	 */
-	public static GameObject create(Vector2 windowDimensions){
+	public static GameObject create(Vector2 windowDimensions) {
 		GameObject sky = new GameObject(Vector2.ZERO, windowDimensions,
 				new RectangleRenderable(BASIC_SKY_COLOR));
 		sky.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);

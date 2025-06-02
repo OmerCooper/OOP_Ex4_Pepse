@@ -19,13 +19,17 @@ import java.util.function.Consumer;
 
 /**
  * Represents a moving cloud made of multiple blocks that animates across the screen.
+ * @author omer and rotem
  */
 public class Cloud {
 
+	private static final float WINDOW_DIMENSION_DIVIDE_BY = 8;
+
 	private final Color BASE_CLOUD_COLOR = new Color(255, 255, 255);
 	private final float CYCLE_LENGTH = 10;
+
 	private Vector2 cloudMostLeftXCenterY;
-	List<Block> cloudBlocks = new ArrayList<>();
+	private List<Block> cloudBlocks = new ArrayList<>();
 
 	/**
 	 * Creates a cloud composed of multiple blocks based on a predefined pattern.
@@ -36,20 +40,13 @@ public class Cloud {
 	 */
 	public List<Block> create(Vector2 windowDimensions) {
 		//TODO set top left of cloud from earth
-		Vector2 cloudTopLeftLoc = new Vector2(windowDimensions.x(), windowDimensions.y() / 8);
+		Vector2 cloudTopLeftLoc =
+				new Vector2(windowDimensions.x(), windowDimensions.y() / WINDOW_DIMENSION_DIVIDE_BY);
 
-		java.util.List<java.util.List<Integer>> cloudShape = List.of(
-				List.of(0, 1, 1, 0, 0, 0),
-				List.of(1, 1, 1, 0, 1, 0),
-				List.of(1, 1, 1, 1, 1, 1),
-				List.of(1, 1, 1, 1, 1, 1),
-				List.of(0, 1, 1, 1, 0, 0),
-				List.of(0, 0, 0, 0, 0, 0)
-		);
+		java.util.List<java.util.List<Integer>> cloudShape = generateCloudShape();
 		float cloudWidth = cloudShape.get(0).size() * Block.SIZE;
 		float startX = windowDimensions.x() + cloudWidth;
 		float endX = -cloudWidth;
-
 		for (int row = 0; row < cloudShape.size(); row++) {
 			for (int col = 0; col < cloudShape.get(row).size(); col++) {
 				if (cloudShape.get(row).get(col) == 1) {
@@ -60,8 +57,6 @@ public class Cloud {
 							new RectangleRenderable(ColorSupplier.approximateMonoColor(BASE_CLOUD_COLOR)));
 					block.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
 					block.setTag("cloud");
-
-					// Animation
 					Vector2 initialblockCenter = block.getCenter();
 					int finalRow = row;
 					int finalCol = col;
@@ -83,6 +78,19 @@ public class Cloud {
 			}
 		}
 		return cloudBlocks;
+	}
+
+	private List<List<Integer>> generateCloudShape() {
+		java.util.List<java.util.List<Integer>> cloudShape =
+		List.of(
+				List.of(0, 1, 1, 0, 0, 0),
+				List.of(1, 1, 1, 0, 1, 0),
+				List.of(1, 1, 1, 1, 1, 1),
+				List.of(1, 1, 1, 1, 1, 1),
+				List.of(0, 1, 1, 1, 0, 0),
+				List.of(0, 0, 0, 0, 0, 0)
+		);
+		return cloudShape;
 	}
 
 	/**

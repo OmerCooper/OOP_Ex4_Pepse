@@ -11,6 +11,7 @@ import java.awt.*;
 /**
  * Handles the visual representation of nighttime in the game.
  * Applies a black transparent overlay that simulates a day-night cycle.
+ * @author omer and rotem
  */
 public class Night {
 
@@ -23,7 +24,7 @@ public class Night {
 	 * oscillates over time to simulate the day-night cycle.
 	 *
 	 * @param windowDimensions The dimensions of the game window.
-	 * @param cycleLength The total length of the day-night cycle (in seconds).
+	 * @param cycleLength      The total length of the day-night cycle (in seconds).
 	 * @return A GameObject representing the night overlay.
 	 */
 	public static GameObject create(Vector2 windowDimensions, float cycleLength) {

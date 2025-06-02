@@ -11,6 +11,7 @@ import java.awt.*;
 /**
  * Represents a glowing halo around the sun.
  * The halo is a semi-transparent yellowish oval that follows the sun's movement across the screen.
+ * @author omer and rotem
  */
 public class SunHalo {
 

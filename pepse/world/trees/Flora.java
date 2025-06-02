@@ -15,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-
+/**
+ * TODO add class explenation
+ *
+ * @author omer and rotem
+ */
 public class Flora {
 
 	private static final Color TRUNK_COLOR = new Color(100, 50, 20);
@@ -29,25 +33,27 @@ public class Flora {
 	private static final int MIN_TRUNK_HEIGHT = 3;
 	private static final float TREES_PROB = 0.1f;
 	private static final float LEAF_PROB = 0.8f;
-	private static final String  LEAF_TAG = "leaf";
-	private static final String  TRUNK_TAG = "trunk";
-	private Random random=new Random();
+	private static final String LEAF_TAG = "leaf";
+	private static final String TRUNK_TAG = "trunk";
+	private Random random = new Random();
 	private Terrain terrain;
 	private int seed;
 
 	/**
 	 * constructor that just use the terrain
+	 *
 	 * @param terrain .
 	 */
 	public Flora(Terrain terrain, int seed) {
 		this.terrain = terrain;
-		this.seed=seed;
+		this.seed = seed;
 
 	}
 
 	/**
 	 * method that get a range between minx to maxX,
 	 * create all the flora on this area, and return in as list of objects
+	 *
 	 * @param minX int
 	 * @param maxX int
 	 * @return list of objects
@@ -57,11 +63,11 @@ public class Flora {
 		minX = (minX / BLOCK_SIZE) * BLOCK_SIZE;
 		maxX = (maxX / BLOCK_SIZE) * BLOCK_SIZE;
 		for (int x = minX; x < maxX; x += BLOCK_SIZE) {
-			Random random1=new Random(Objects.hash(x, seed));
+			Random random1 = new Random(Objects.hash(x, seed));
 			if (random1.nextFloat() > TREES_PROB) continue; // create trees sparsely
 
 			float groundHeight = terrain.groundHeightAt(x);
-			int trunkHeight = MIN_TRUNK_HEIGHT + random1.nextInt(MAX_TRUNK_HEIGHT+1 - MIN_TRUNK_HEIGHT);
+			int trunkHeight = MIN_TRUNK_HEIGHT + random1.nextInt(MAX_TRUNK_HEIGHT + 1 - MIN_TRUNK_HEIGHT);
 
 			// Create trunk
 			for (int i = 1; i <= trunkHeight; i++) {
@@ -72,20 +78,19 @@ public class Flora {
 			}
 
 			// Create leaves in a square of size commpared to the height of the tree.
-			float xPos,yPos;
+			float xPos, yPos;
 			float leafStartY = groundHeight - Block.SIZE * trunkHeight;
-			for (int dx = -trunkHeight/2; dx <= trunkHeight/2; dx++) {
-				for (int dy = -trunkHeight/2; dy <= trunkHeight/2; dy++) {
-					xPos=x + dx * LEAF_SIZE;
-					yPos=leafStartY + dy * LEAF_SIZE;
-					Vector2 leafPos = new Vector2(xPos,yPos );
+			for (int dx = -trunkHeight / 2; dx <= trunkHeight / 2; dx++) {
+				for (int dy = -trunkHeight / 2; dy <= trunkHeight / 2; dy++) {
+					xPos = x + dx * LEAF_SIZE;
+					yPos = leafStartY + dy * LEAF_SIZE;
+					Vector2 leafPos = new Vector2(xPos, yPos);
 					// create fruits where there are no leaves in high prob
 					if (random1.nextFloat() > LEAF_PROB) {
-						if (random1.nextFloat() < LEAF_PROB){
+						if (random1.nextFloat() < LEAF_PROB) {
 							treeParts.add(FruitFactory.createFruit(leafPos));
 						}
-					}
-					else {
+					} else {
 						GameObject leaf = new GameObject(leafPos, new Vector2(LEAF_SIZE, LEAF_SIZE),
 								new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR)));
 						leaf.setTag(LEAF_TAG);
@@ -127,7 +132,7 @@ public class Flora {
 		});
 	}
 
-	private void animateLeafWithSizeChange (GameObject leaf) {
+	private void animateLeafWithSizeChange(GameObject leaf) {
 		float delay = random.nextFloat() * 1f;
 		float interval = 0.02f;
 		float cycleLength = 2f;
@@ -146,8 +151,8 @@ public class Flora {
 				Transition.updateSize(
 						t[0],
 						(size, ignoredForward) -> leaf.setDimensions(size),
-						new Vector2(LEAF_SIZE/LEAF_SIZE_CHANGE,LEAF_SIZE/LEAF_SIZE_CHANGE),
-						new Vector2(LEAF_SIZE*LEAF_SIZE_CHANGE, LEAF_SIZE*LEAF_SIZE_CHANGE),
+						new Vector2(LEAF_SIZE / LEAF_SIZE_CHANGE, LEAF_SIZE / LEAF_SIZE_CHANGE),
+						new Vector2(LEAF_SIZE * LEAF_SIZE_CHANGE, LEAF_SIZE * LEAF_SIZE_CHANGE),
 						forward[0]
 				);
 			});

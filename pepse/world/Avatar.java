@@ -17,15 +17,19 @@ import java.util.List;
  * The avatar can move left, right, and jump based on user input,
  * and its visual state (idle, run, jump) is animated accordingly.
  * It also consumes and regenerates energy based on actions.
+ * @author omer and rotem
  */
 public class Avatar extends GameObject {
-	private static final float VELOCITY_X = 400;
-	private static final float VELOCITY_Y = -400;
+	private static final float VELOCITY_X = 300;
+	private static final float VELOCITY_Y = -300;
 	private static final float GRAVITY = 300;
 
 	public static final float AVATAR_WIDTH = 60;
-	public static final float AVATAR_HEIGHT = 60;
+	public static final float AVATAR_HEIGHT =90;
 	private static final double TIME_BETWEEN_CLIPS = 0.5;
+	private static final float MOVE_ENERGY = 0.5f;
+	private static final float JUMP_ENERGY = 10;
+	private static final float MAX_ENERGY = 100;
 
 	private UserInputListener inputListener;
 	AnimationRenderable idleAnimation, runAnimation, jumpAnimation;
@@ -40,7 +44,7 @@ public class Avatar extends GameObject {
 	 *
 	 * @param topLeftCorner The top-left position of the avatar in world coordinates.
 	 * @param inputListener User input listener for handling movement and jumping.
-	 * @param imageReader Used to load animation frames for different avatar states.
+	 * @param imageReader   Used to load animation frames for different avatar states.
 	 */
 	public Avatar(Vector2 topLeftCorner, UserInputListener inputListener, ImageReader imageReader) {
 		super(topLeftCorner,
@@ -75,14 +79,15 @@ public class Avatar extends GameObject {
 				imageReader.readImage("assets/jump_2.png", false),
 				imageReader.readImage("assets/jump_3.png", false)
 		};
-		this.jumpAnimation = new AnimationRenderable(idleImages, TIME_BETWEEN_CLIPS); // Intentional reuse?
+		this.jumpAnimation = new AnimationRenderable(jumpImages, TIME_BETWEEN_CLIPS);
 
 		this.avatarState = AvatarState.idle;
-		this.energy = 100;
+		this.energy = MAX_ENERGY;
 	}
 
 	/**
-	 * Updates the avatar's physics, animations, and state transitions based on user input.
+	 * Updates the avatar's physics, animations,
+	 * and state transitions based on user input.
 	 *
 	 * @param deltaTime The time passed since the last update (in seconds).
 	 */
@@ -95,7 +100,7 @@ public class Avatar extends GameObject {
 
 		if (inputListener.isKeyPressed(KeyEvent.VK_LEFT) &&
 				!inputListener.isKeyPressed(KeyEvent.VK_RIGHT) &&
-				this.energy >= 0.5) {
+				this.energy >= MOVE_ENERGY) {
 			xVel -= VELOCITY_X;
 			this.avatarState = AvatarState.run;
 			moveLeft = true;
@@ -103,7 +108,8 @@ public class Avatar extends GameObject {
 		}
 
 		if (inputListener.isKeyPressed(KeyEvent.VK_RIGHT) &&
-				!(inputListener.isKeyPressed(KeyEvent.VK_LEFT) && this.energy >= 0.5)) {
+				!(inputListener.isKeyPressed(KeyEvent.VK_LEFT) && this.energy >= MOVE_ENERGY)) {
+
 			xVel += VELOCITY_X;
 			this.avatarState = AvatarState.run;
 			doneAction = true;
@@ -113,34 +119,36 @@ public class Avatar extends GameObject {
 
 		if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) &&
 				getVelocity().y() == 0 &&
-				this.energy >= 10) {
+				this.energy >=JUMP_ENERGY) {
 			transform().setVelocityY(VELOCITY_Y);
 			this.avatarState = AvatarState.jump;
 			doneAction = true;
 			notifyJump();
 		}
-
 		if (!doneAction && getVelocity().y() == 0 && getVelocity().x() == 0) {
 			this.avatarState = AvatarState.idle;
 		} else if (!doneAction) {
 			this.avatarState = AvatarState.neither;
 		}
+		updateByState(moveLeft);
+	}
 
+	private void updateByState(boolean moveLeft) {
 		switch (avatarState) {
 			case idle:
 				renderer().setRenderable(idleAnimation);
-				if (this.energy < 100) {
+				if (this.energy < MAX_ENERGY) {
 					addEnergy(1);
 				}
 				break;
 			case run:
 				renderer().setRenderable(runAnimation);
 				renderer().setIsFlippedHorizontally(moveLeft);
-				subEnergy(0.5f);
+				subEnergy(MOVE_ENERGY);
 				break;
 			case jump:
 				renderer().setRenderable(jumpAnimation);
-				subEnergy(10);
+				subEnergy(JUMP_ENERGY);
 				break;
 			default:
 				break;
@@ -153,7 +161,7 @@ public class Avatar extends GameObject {
 	 * @param addition Amount of energy to add.
 	 */
 	public void addEnergy(float addition) {
-		this.energy = Math.min(this.energy + addition, 100);
+		this.energy = Math.min(this.energy + addition, MAX_ENERGY);
 	}
 
 	/**
@@ -174,13 +182,13 @@ public class Avatar extends GameObject {
 		return energy;
 	}
 
+	@Override
 	/**
 	 * Handles collisions. If the avatar touches the ground, vertical velocity is reset to zero.
 	 *
 	 * @param other     The GameObject the avatar collided with.
 	 * @param collision Collision details.
 	 */
-	@Override
 	public void onCollisionEnter(GameObject other, Collision collision) {
 		super.onCollisionEnter(other, collision);
 		if (other.getTag().equals("ground")) {

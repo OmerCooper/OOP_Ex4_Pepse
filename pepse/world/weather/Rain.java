@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 /**
  * Represents rain in the game world. When the avatar jumps,
  * blocks representing raindrops are created and fall with gravity while fading out.
+ * @author omer and rotem
  */
 public class Rain implements AvatarListener {
 
@@ -30,6 +31,10 @@ public class Rain implements AvatarListener {
 	private static final float INITIAL_OPACITY = 1f;
 	private static final float FINAL_OPACITY = 0f;
 	private static final float TIME_OF_FALL = 2;
+	private static final int RAIN_ROWS = 6;
+	private static final int RAIN_COL = 5;
+	private static final int MIN_RAIN_DROPS = 4;
+	private static final int MAX_RAIN_DROPS = 6;
 
 	private Cloud cloud;
 	private final BiConsumer<GameObject, Integer> addGameObjectCallback;
@@ -38,8 +43,8 @@ public class Rain implements AvatarListener {
 	/**
 	 * Constructs a Rain instance.
 	 *
-	 * @param cloud The cloud object from which the rain will fall.
-	 * @param addGameObjectCallback A callback to add raindrop GameObjects to the game.
+	 * @param cloud                    The cloud object from which the rain will fall.
+	 * @param addGameObjectCallback    A callback to add raindrop GameObjects to the game.
 	 * @param removeGameObjectCallback A callback to remove raindrop GameObjects from the game.
 	 */
 	public Rain(Cloud cloud,
@@ -61,8 +66,8 @@ public class Rain implements AvatarListener {
 		Vector2 cloudCenterLeftLoc = cloud.getCloudCenterLeft();
 
 		java.util.List<Block> rainBlocks = new ArrayList<>();
-		java.util.List<java.util.List<Integer>> rainShape = generateRainShape(6, 5, 4, 6);
-
+		java.util.List<java.util.List<Integer>> rainShape =
+				generateRainShape(RAIN_ROWS, RAIN_COL, MIN_RAIN_DROPS, MAX_RAIN_DROPS);
 		for (int row = 0; row < rainShape.size(); row++) {
 			for (int col = 0; col < rainShape.get(row).size(); col++) {
 				if (rainShape.get(row).get(col) == 1) {
@@ -98,10 +103,11 @@ public class Rain implements AvatarListener {
 		return rainBlocks;
 	}
 
-	/**
-	 * Triggered when the avatar jumps. This method causes rain to fall by creating and adding raindrop blocks.
-	 */
 	@Override
+	/**
+	 * Triggered when the avatar jumps.
+	 * This method causes rain to fall by creating and adding raindrop blocks.
+	 */
 	public void onJump() {
 		Rain rain = this;
 		for (Block b : rain.create(this.cloud)) {
@@ -112,8 +118,8 @@ public class Rain implements AvatarListener {
 	/**
 	 * Generates a random 2D rain shape matrix with a given number of ones (raindrops) scattered in a grid.
 	 *
-	 * @param rows Number of rows in the shape.
-	 * @param cols Number of columns in the shape.
+	 * @param rows    Number of rows in the shape.
+	 * @param cols    Number of columns in the shape.
 	 * @param minOnes Minimum number of raindrops.
 	 * @param maxOnes Maximum number of raindrops.
 	 * @return A 2D List of integers where 1 represents a raindrop and 0 represents an empty space.

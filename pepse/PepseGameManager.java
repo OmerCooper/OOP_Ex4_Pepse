@@ -44,23 +44,24 @@ public class PepseGameManager extends GameManager {
 
 	/**
 	 * Entry point of the program. Launches the game.
+	 * @param args arguments from user
+	 * @author omer and rotem
 	 */
 	public static void main(String[] args) {
 		new PepseGameManager().run();
 	}
 
+	@Override
 	/**
 	 * Initializes the game by setting up all visual and logical components including:
 	 * terrain, sky, day-night cycle, avatar, weather, and dynamic chunk loading.
 	 */
-	@Override
 	public void initializeGame(ImageReader imageReader,
 							   SoundReader soundReader,
 							   UserInputListener inputListener,
 							   WindowController windowController) {
 		super.initializeGame(imageReader, soundReader, inputListener, windowController);
 		windowDimensions = windowController.getWindowDimensions();
-
 		// Sky
 		gameObjects().addGameObject(Sky.create(windowDimensions), Layer.BACKGROUND);
 
@@ -68,11 +69,9 @@ public class PepseGameManager extends GameManager {
 		terrain = new Terrain(windowController.getWindowDimensions(), 1);
 		flora = new Flora(terrain, 1);
 		chunkSize = (int) windowController.getWindowDimensions().x() / 2;
-
 		for (int i = -1; i <= 1; i++) {
 			addTerrainAndFlora(i, terrain, flora);
 		}
-
 		// Night cycle
 		GameObject night = Night.create(windowDimensions, CYCLE_LENGTH_SEC);
 		gameObjects().addGameObject(night, Layer.FOREGROUND);
@@ -80,22 +79,17 @@ public class PepseGameManager extends GameManager {
 		// Sun and sun halo
 		GameObject sun = Sun.create(windowDimensions, CYCLE_LENGTH_SEC, terrain.groundHeightAt(0));
 		gameObjects().addGameObject(sun, Layer.BACKGROUND + 1);
-
 		GameObject sunHalo = SunHalo.create(sun);
 		gameObjects().addGameObject(sunHalo, Layer.BACKGROUND + 2);
 
 		// Avatar
-		this.avatar = new Avatar(Vector2.of(STARTING_X,
-				terrain.groundHeightAt(STARTING_X) - Avatar.AVATAR_HEIGHT), inputListener, imageReader);
-		setCamera(new Camera(avatar, Vector2.ZERO, windowDimensions, windowDimensions));
-		gameObjects().addGameObject(avatar, Layer.DEFAULT);
+		createAvatar(imageReader,inputListener);
 
 		// Cloud
 		Cloud cloud = new Cloud();
 		for (Block b : cloud.create(windowDimensions)) {
 			gameObjects().addGameObject(b, Layer.BACKGROUND);
 		}
-
 		// Rain
 		Rain rain = new Rain(cloud,
 				(gameObject, layer) -> gameObjects().addGameObject(gameObject, layer),
@@ -103,6 +97,18 @@ public class PepseGameManager extends GameManager {
 		avatar.addListener(rain);
 
 		// Energy display text
+		displayText();
+	}
+
+	private void createAvatar(ImageReader imageReader,
+							  UserInputListener inputListener) {
+		this.avatar = new Avatar(Vector2.of(STARTING_X,
+				terrain.groundHeightAt(STARTING_X) - Avatar.AVATAR_HEIGHT), inputListener, imageReader);
+		setCamera(new Camera(avatar, Vector2.ZERO, windowDimensions, windowDimensions));
+		gameObjects().addGameObject(avatar, Layer.DEFAULT);
+	}
+
+	private void displayText() {
 		TextRenderable textRenderable = new TextRenderable(Integer.toString((int) avatar.getEnergy()) + '%');
 		textRenderable.setColor(Color.BLACK);
 		Vector2 textLoc = new Vector2(0, 0);
@@ -146,12 +152,12 @@ public class PepseGameManager extends GameManager {
 		loadedChunks.remove(chunk_num);
 	}
 
+	@Override
 	/**
 	 * Called once per frame. Updates energy display and handles dynamic loading/unloading of world chunks.
 	 *
 	 * @param deltaTime Time in seconds since the last frame.
 	 */
-	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
 
