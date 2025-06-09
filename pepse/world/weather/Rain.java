@@ -23,6 +23,8 @@ import java.util.function.Consumer;
 /**
  * Represents rain in the game world. When the avatar jumps,
  * blocks representing raindrops are created and fall with gravity while fading out.
+ * the onJump is given from the extention to AvatarListenerDefault
+ * which on it's turn impliments AvatarListener interface
  * @author omer and rotem
  */
 public class Rain extends AvatarListenerDefault {
