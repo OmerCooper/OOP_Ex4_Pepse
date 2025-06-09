@@ -9,6 +9,7 @@ import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 import pepse.util.ColorSupplier;
 import pepse.world.AvatarListener;
+import pepse.world.AvatarListenerDefault;
 import pepse.world.Block;
 
 import java.awt.*;
@@ -24,7 +25,7 @@ import java.util.function.Consumer;
  * blocks representing raindrops are created and fall with gravity while fading out.
  * @author omer and rotem
  */
-public class Rain implements AvatarListener {
+public class Rain extends AvatarListenerDefault {
 
 	private static final Color RAIN_COLOR = new Color(93, 116, 250);
 	private static final float GRAVITY = 600;
