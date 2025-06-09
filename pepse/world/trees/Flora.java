@@ -18,7 +18,8 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 /**
- * TODO add class explenation
+ * creates all the flora for the world. uses the terrain for the height.
+ * use the same seed in a way that support the infinete world.
  *
  * @author omer and rotem
  */

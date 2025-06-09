@@ -26,13 +26,18 @@ import java.util.List;
 
 /**
  * Main game manager for the Pepse world.
- * Handles initialization of terrain, avatar, weather effects, day-night cycle, and chunk-based world loading.
+ * Handles initialization of terrain, avatar, weather effects, day-night cycle,
+ * and chunk-based world loading.
+ * @author omer and rotem
  */
 public class PepseGameManager extends GameManager {
 	private static final float CYCLE_LENGTH_SEC = 30;
 	private static final float STARTING_X = 0;
 	private static final float TEXT_WIDTH = 60;
 	private static final float TEXT_HEIGHT = 60;
+	private static final int SEED = 1;
+	private static final String AVATAR = "avatar";
+	private static final String LEAF = "leaf";
 
 	private Map<Integer, List<GameObject>> loadedChunks = new HashMap<>();
 	private int chunkSize;
@@ -66,11 +71,11 @@ public class PepseGameManager extends GameManager {
 		gameObjects().addGameObject(Sky.create(windowDimensions), Layer.BACKGROUND);
 
 		// Terrain
-		terrain = new Terrain(windowController.getWindowDimensions(), 1);
+		terrain = new Terrain(windowController.getWindowDimensions(), SEED);
 		// Avatar
 		createAvatar(imageReader,inputListener);
 		// flora
-		flora = new Flora(terrain, 1,avatar::addEnergy);
+		flora = new Flora(terrain, SEED,avatar::addEnergy);
 		chunkSize = (int) windowController.getWindowDimensions().x() / 2;
 		for (int i = -1; i <= 1; i++) {
 			addTerrainAndFlora(i, terrain, flora);
@@ -107,7 +112,7 @@ public class PepseGameManager extends GameManager {
 		this.avatar = new Avatar(Vector2.of(STARTING_X,
 				terrain.groundHeightAt(STARTING_X) - Avatar.AVATAR_HEIGHT), inputListener, imageReader);
 		setCamera(new Camera(avatar, Vector2.ZERO, windowDimensions, windowDimensions));
-		avatar.setTag("avatar");
+		avatar.setTag(AVATAR);
 		gameObjects().addGameObject(avatar, Layer.DEFAULT);
 	}
 
@@ -136,7 +141,7 @@ public class PepseGameManager extends GameManager {
 			list.add(b);
 		}
 		for (GameObject treePart : flora.createInRange(minX, maxX)) {
-			int layer = treePart.getTag().equals("leaf") ? Layer.FOREGROUND : Layer.DEFAULT;
+			int layer = treePart.getTag().equals(LEAF) ? Layer.FOREGROUND : Layer.DEFAULT;
 			this.gameObjects().addGameObject(treePart, layer);
 			list.add(treePart);
 		}

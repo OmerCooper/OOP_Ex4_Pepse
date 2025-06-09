@@ -4,7 +4,7 @@ import danogl.util.Vector2;
 
 import java.util.function.BiConsumer;
 /**
- * TODO add class explenation
+ * class that creates the call back functions for the transitions.
  *
  * @author omer and rotem
  */
@@ -24,25 +24,6 @@ public class Transition {
 								   float min,
 								   float max,
 								   boolean forward) {
-		float interp = forward ? t : 1 - t;
-		float value = getValBetween(min, max, interp);
-		onUpdate.accept(value, forward);
-	}
-
-	/**
-	 * gives us an update for the fade, depend on going backward or forword
-	 *
-	 * @param t        where we at
-	 * @param onUpdate the lambda
-	 * @param min      - min angle
-	 * @param max      - max angle
-	 * @param forward  - boolean
-	 */
-	public static void updateFade(float t,
-								  BiConsumer<Float, Boolean> onUpdate,
-								  float min,
-								  float max,
-								  boolean forward) {
 		float interp = forward ? t : 1 - t;
 		float value = getValBetween(min, max, interp);
 		onUpdate.accept(value, forward);

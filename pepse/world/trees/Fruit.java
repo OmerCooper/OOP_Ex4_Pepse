@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.function.Consumer;
 
 /**
- * TODO add class explenation
+ * class that creates fruit object, and hendle its disapperance.
  *
  * @author omer and rotem
  */
@@ -27,34 +27,22 @@ public class Fruit extends GameObject {
 	private final Consumer<Float> addEnergyFunc;
 
 	/**
-	 * Construct a new GameObject instance.
-	 *
-	 * @param topLeftCorner Position of the object, in window coordinates (pixels).
-	 *                      Note that (0,0) is the top-left corner of the window.
-	 * @param dimensions    Width and height in window coordinates.
-	 * @param renderable    The renderable representing the object. Can be null, in which case
-	 *                      the GameObject will not be rendered.
+	 * creates new fruit
+	 * @param position - the vector possition for the fruit
+	 * @param addEnergy - energy call back from avatar
 	 */
 	public Fruit(Vector2 position, Consumer<Float> addEnergy) {
-		super(new Vector2(position.x() + FRUIT_SIZE.x() / 2, position.y() + FRUIT_SIZE.y() / 2), FRUIT_SIZE, new OvalRenderable(FRUIT_COLOR));
+		super(new Vector2(position.x() + FRUIT_SIZE.x() / 2, position.y() + FRUIT_SIZE.y() / 2), FRUIT_SIZE,
+				new OvalRenderable(FRUIT_COLOR));
 		this.addEnergyFunc=addEnergy;
+		this.setTag("fruit");
 	}
 
-	/**
-	 * Hide the fruit and schedule it to reappear after 30 seconds
-	 *
-	 * @param fruit - the fruit Game object
-	 */
-	public static void eatFruit(GameObject fruit) {
-		fruit.renderer().setRenderable(null); // Hide the fruit
-		new ScheduledTask(fruit, REGENERATE_TIMER, false, () -> {
-			fruit.renderer().setRenderable(new OvalRenderable(ColorSupplier.approximateColor(FRUIT_COLOR)));
-		});
-	}
 
 	@Override
 	/**
 	 * Called on the first frame of a collision.
+	 * here it adds energy and make the fruit disappear and come back after 30 sec
 	 *
 	 * @param other     The GameObject with which a collision occurred.
 	 * @param collision Information regarding this collision.
