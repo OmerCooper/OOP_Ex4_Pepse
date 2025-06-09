@@ -24,6 +24,7 @@ public class Fruit extends GameObject {
 	private static final float REGENERATE_TIMER = 30f;
 	private static final float ENERGY_ADDITION = 10f;
 	private static final String FRUIT_TAG = "fruit";
+	private static final String AVATAR_TAG = "avatar";
 	private final Consumer<Float> addEnergyFunc;
 
 	/**
@@ -51,10 +52,11 @@ public class Fruit extends GameObject {
 	 */
 	public void onCollisionEnter(GameObject other, Collision collision) {
 		super.onCollisionEnter(other, collision);
-		if(other.getTag().equals("avatar")){
+		if(other.getTag().equals(AVATAR_TAG)){
 			this.renderer().setRenderable(null);
 			new ScheduledTask(this, REGENERATE_TIMER, false, () -> {
-				this.renderer().setRenderable(new OvalRenderable(ColorSupplier.approximateColor(FRUIT_COLOR)));
+				this.renderer().setRenderable
+						(new OvalRenderable(ColorSupplier.approximateColor(FRUIT_COLOR)));
 			});
 			this.addEnergyFunc.accept(ENERGY_ADDITION);
 		}

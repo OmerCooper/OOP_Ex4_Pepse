@@ -38,6 +38,7 @@ public class Rain extends AvatarListenerDefault {
 	private static final int RAIN_COL = 5;
 	private static final int MIN_RAIN_DROPS = 4;
 	private static final int MAX_RAIN_DROPS = 6;
+	private static final String RAIN_TAG = "rain";
 
 	private Cloud cloud;
 	private final BiConsumer<GameObject, Integer> addGameObjectCallback;
@@ -80,7 +81,7 @@ public class Rain extends AvatarListenerDefault {
 					Block block = new Block(blockInitialPos,
 							new RectangleRenderable(RAIN_COLOR));
 					block.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-					block.setTag("rain");
+					block.setTag(RAIN_TAG);
 
 					// Set falling animation and fading effect
 					block.transform().setAccelerationY(GRAVITY);

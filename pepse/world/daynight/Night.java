@@ -18,6 +18,7 @@ public class Night {
 	private static final Color NIGHT_COLOR = Color.BLACK;
 	private static final float MIDNIGHT_OPACITY = 0.5F;
 	private static final float INITIAL_OPACITY = 0;
+	private static final String NIGHT_TAG = "night";
 
 	/**
 	 * Creates a night GameObject that overlays the screen with a black rectangle whose opacity
@@ -31,7 +32,7 @@ public class Night {
 		GameObject night = new GameObject(Vector2.ZERO, windowDimensions,
 				new RectangleRenderable(NIGHT_COLOR));
 		night.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-		night.setTag("night");
+		night.setTag(NIGHT_TAG);
 		new Transition<Float>(
 				night,
 				night.renderer()::setOpaqueness,

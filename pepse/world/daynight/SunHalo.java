@@ -20,6 +20,7 @@ public class SunHalo {
 	private static final int BLUE_COLOR_COMPOMENT = 0;
 	private static final int ALPHA_COLOR_COMPOMENT = 30;
 	private static final float SIZE_BIGGER_THEN_SUN = 50;
+	private static final String SUNHALO_TAG = "sunHalo";
 
 	/**
 	 * Creates a sun halo GameObject that visually follows the provided sun object.
@@ -46,7 +47,7 @@ public class SunHalo {
 				)
 		);
 		sunHalo.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-		sunHalo.setTag("sunHalo");
+		sunHalo.setTag(SUNHALO_TAG);
 		sunHalo.addComponent((deltaTime) -> sunHalo.setCenter(sun.getCenter()));
 		return sunHalo;
 	}

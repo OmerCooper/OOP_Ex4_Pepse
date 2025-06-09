@@ -25,8 +25,9 @@ public class Cloud {
 
 	private static final float WINDOW_DIMENSION_DIVIDE_BY = 8;
 
-	private final Color BASE_CLOUD_COLOR = new Color(255, 255, 255);
-	private final float CYCLE_LENGTH = 10;
+	private static final Color BASE_CLOUD_COLOR = new Color(255, 255, 255);
+	private static final float CYCLE_LENGTH = 10;
+	private static final String CLOUD_TAG = "cloud";
 
 	private Vector2 cloudMostLeftXCenterY;
 	private List<Block> cloudBlocks = new ArrayList<>();
@@ -52,11 +53,10 @@ public class Cloud {
 				if (cloudShape.get(row).get(col) == 1) {
 					Vector2 relativeOffset = new Vector2(col * Block.SIZE, row * Block.SIZE);
 					Vector2 blockInitialPos = cloudTopLeftLoc.add(relativeOffset);
-
 					Block block = new Block(blockInitialPos,
 							new RectangleRenderable(ColorSupplier.approximateMonoColor(BASE_CLOUD_COLOR)));
 					block.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-					block.setTag("cloud");
+					block.setTag(CLOUD_TAG);
 					Vector2 initialblockCenter = block.getCenter();
 					int finalRow = row;
 					int finalCol = col;

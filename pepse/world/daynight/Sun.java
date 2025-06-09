@@ -19,6 +19,7 @@ public class Sun {
 	private static final Color SUN_COLOR = Color.YELLOW;
 	private static final float INITIAL_ANGLE = 0;
 	private static final float FINAL_ANGLE = 360;
+	private static final String SUN_TAG = "sun";
 
 	/**
 	 * Creates a sun GameObject that moves in a circular trajectory around a cycle center point
@@ -37,7 +38,7 @@ public class Sun {
 						windowDimensions.x() / WINDOW_DIMENSION_DIVIDE_BY);
 		GameObject sun = new GameObject(initialSunCenter, sunSize, new OvalRenderable(SUN_COLOR));
 		sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-		sun.setTag("sun");
+		sun.setTag(SUN_TAG);
 
 		// The point around which the sun will rotate
 		Vector2 cycleCenter = new Vector2(windowDimensions.x() / 2, groundLevel);

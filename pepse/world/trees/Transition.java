@@ -55,7 +55,7 @@ public class Transition {
 	 * @param a - min
 	 * @param b -max
 	 * @param t - value between 0 to 1
-	 * @return
+	 * @return float
 	 */
 	private static float getValBetween(float a, float b, float t) {
 		return a + t * (b - a);

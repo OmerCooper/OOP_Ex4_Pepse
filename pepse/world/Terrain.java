@@ -16,6 +16,11 @@ import java.util.List;
  * @author omer and rotem
  */
 public class Terrain {
+	private static final int TERREIN_LEVEL = 2/3;
+	private static final int TERREIN_LEVEL_MONE = 2;
+	private static final int TERREIN_LEVEL_MEHANE = 3;
+	private static final int NUMER_OF_BLOCKS_NOISE = 7;
+	private static final String GROUN_TAG = "ground";
 	public float groundHeightAtX0;
 	public NoiseGenerator noiseGenerator;
 	private static final Color BASE_GROUND_COLOR = new Color(212, 123, 74);
@@ -28,7 +33,7 @@ public class Terrain {
 	 * @param seed             A seed value for generating consistent terrain using noise.
 	 */
 	public Terrain(Vector2 windowDimensions, int seed) {
-		groundHeightAtX0 = windowDimensions.y() * 2 / 3;
+		groundHeightAtX0 = windowDimensions.y() * TERREIN_LEVEL_MONE/TERREIN_LEVEL_MEHANE;
 		noiseGenerator = new NoiseGenerator(seed, (int) groundHeightAtX0);
 	}
 
@@ -39,7 +44,7 @@ public class Terrain {
 	 * @return The computed ground height based on Perlin-like noise.
 	 */
 	public float groundHeightAt(float x) {
-		float noise = (float) noiseGenerator.noise(x, Block.SIZE * 7);
+		float noise = (float) noiseGenerator.noise(x, Block.SIZE * NUMER_OF_BLOCKS_NOISE);
 		return groundHeightAtX0 + noise;
 	}
 
@@ -61,7 +66,7 @@ public class Terrain {
 				Renderable rend = new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR));
 				Vector2 v = new Vector2(x, y + j * blockSize);
 				Block block = new Block(v, rend);
-				block.setTag("ground");
+				block.setTag(GROUN_TAG);
 				lst.add(block);
 			}
 		}

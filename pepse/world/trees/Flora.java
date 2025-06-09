@@ -29,8 +29,8 @@ public class Flora {
 	private static final Color LEAF_COLOR = new Color(50, 200, 30);
 	private static final int BLOCK_SIZE = Block.SIZE;
 	private static final int LEAF_SIZE = BLOCK_SIZE;
-	private static final float LEAF_SIZE_CHANGE = 1.1f;
-	private static final float LEAF_ANGLE_CHANGE = 15f;
+	private static final float LEAF_SIZE_CHANGE = 1.2f;
+	private static final float LEAF_ANGLE_CHANGE = 20f;
 	private static final int TRUNK_WIDTH = BLOCK_SIZE;
 	private static final int MAX_TRUNK_HEIGHT = 5;
 	private static final int MIN_TRUNK_HEIGHT = 3;
@@ -38,6 +38,9 @@ public class Flora {
 	private static final float LEAF_PROB = 0.7f;
 	private static final String LEAF_TAG = "leaf";
 	private static final String TRUNK_TAG = "trunk";
+	private static final float INTERVAL = 0.02f;
+	private static final float CYCLE_LENGTH = 2f;
+	private static final float MAXIMAL_DELAY = 1f;
 	private Random random = new Random();
 	private Terrain terrain;
 	private int seed;
@@ -46,7 +49,9 @@ public class Flora {
 	/**
 	 * constructor that just use the terrain
 	 *
-	 * @param terrain .
+	 * @param terrain The terrain
+	 * @param seed the global seed
+	 * @param addEnergy callback function from avatar to add energy
 	 */
 	public Flora(Terrain terrain, int seed, Consumer<Float> addEnergy) {
 		this.terrain = terrain;
@@ -70,19 +75,15 @@ public class Flora {
 		for (int x = minX; x < maxX; x += BLOCK_SIZE) {
 			Random random1 = new Random(Objects.hash(x, seed));
 			if (random1.nextFloat() > TREES_PROB) continue; // create trees sparsely
-
 			float groundHeight = terrain.groundHeightAt(x);
 			int trunkHeight = MIN_TRUNK_HEIGHT + random1.nextInt(MAX_TRUNK_HEIGHT + 1 - MIN_TRUNK_HEIGHT);
 
-			// Create trunk
 			for (int i = 1; i <= trunkHeight; i++) {
 				Vector2 pos = new Vector2(x, groundHeight - Block.SIZE * i);
 				GameObject trunkBlock = new Block(pos, new RectangleRenderable(TRUNK_COLOR));
 				trunkBlock.setTag(TRUNK_TAG);
 				treeParts.add(trunkBlock);
 			}
-
-			// Create leaves in a square of size commpared to the height of the tree.
 			float xPos, yPos;
 			float leafStartY = groundHeight - Block.SIZE * trunkHeight;
 			for (int dx = -trunkHeight / 2; dx <= trunkHeight / 2; dx++) {
@@ -112,8 +113,8 @@ public class Flora {
 
 	private void animateLeafWithSwing(GameObject leaf) {
 		float delay = random.nextFloat(); // random deley
-		float interval = 0.02f; // the animation interval
-		float cycleLength = 2f; // the full cycle of the animation
+		float interval = INTERVAL; // the animation interval
+		float cycleLength = CYCLE_LENGTH; // the full cycle of the animation
 
 		float[] t = {this.random.nextFloat()};
 		boolean[] forward = {true};
@@ -138,9 +139,9 @@ public class Flora {
 	}
 
 	private void animateLeafWithSizeChange(GameObject leaf) {
-		float delay = random.nextFloat() * 1f;
-		float interval = 0.02f;
-		float cycleLength = 2f;
+		float delay = random.nextFloat();
+		float interval = INTERVAL;
+		float cycleLength = CYCLE_LENGTH;
 
 		float[] t = {random.nextFloat()};
 		boolean[] forward = {true};
@@ -148,7 +149,7 @@ public class Flora {
 		new ScheduledTask(leaf, delay, false, () -> {
 			new ScheduledTask(leaf, interval, true, () -> {
 				t[0] += interval / cycleLength;
-				if (t[0] >= 1f) {
+				if (t[0] >= MAXIMAL_DELAY) {
 					t[0] = 0f;
 					forward[0] = !forward[0];
 				}

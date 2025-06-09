@@ -4,7 +4,6 @@ import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
 import danogl.components.CoordinateSpace;
-import danogl.components.Transition;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
@@ -36,7 +35,7 @@ public class PepseGameManager extends GameManager {
 	private static final float TEXT_WIDTH = 60;
 	private static final float TEXT_HEIGHT = 60;
 	private static final int SEED = 1;
-	private static final String AVATAR = "avatar";
+	private static final String AVATAR_TAG = "avatar";
 	private static final String LEAF = "leaf";
 
 	private Map<Integer, List<GameObject>> loadedChunks = new HashMap<>();
@@ -69,7 +68,6 @@ public class PepseGameManager extends GameManager {
 		windowDimensions = windowController.getWindowDimensions();
 		// Sky
 		gameObjects().addGameObject(Sky.create(windowDimensions), Layer.BACKGROUND);
-
 		// Terrain
 		terrain = new Terrain(windowController.getWindowDimensions(), SEED);
 		// Avatar
@@ -78,19 +76,16 @@ public class PepseGameManager extends GameManager {
 		flora = new Flora(terrain, SEED,avatar::addEnergy);
 		chunkSize = (int) windowController.getWindowDimensions().x() / 2;
 		for (int i = -1; i <= 1; i++) {
-			addTerrainAndFlora(i, terrain, flora);
+			addTerrainFlora(i, terrain, flora);
 		}
 		// Night cycle
 		GameObject night = Night.create(windowDimensions, CYCLE_LENGTH_SEC);
 		gameObjects().addGameObject(night, Layer.FOREGROUND);
-
 		// Sun and sun halo
 		GameObject sun = Sun.create(windowDimensions, CYCLE_LENGTH_SEC, terrain.groundHeightAt(0));
 		gameObjects().addGameObject(sun, Layer.BACKGROUND + 1);
 		GameObject sunHalo = SunHalo.create(sun);
 		gameObjects().addGameObject(sunHalo, Layer.BACKGROUND + 2);
-
-
 
 		// Cloud
 		Cloud cloud = new Cloud();
@@ -112,7 +107,7 @@ public class PepseGameManager extends GameManager {
 		this.avatar = new Avatar(Vector2.of(STARTING_X,
 				terrain.groundHeightAt(STARTING_X) - Avatar.AVATAR_HEIGHT), inputListener, imageReader);
 		setCamera(new Camera(avatar, Vector2.ZERO, windowDimensions, windowDimensions));
-		avatar.setTag(AVATAR);
+		avatar.setTag(AVATAR_TAG);
 		gameObjects().addGameObject(avatar, Layer.DEFAULT);
 	}
 
@@ -131,7 +126,7 @@ public class PepseGameManager extends GameManager {
 	 * @param terrain   The Terrain generator.
 	 * @param flora     The Flora generator.
 	 */
-	private void addTerrainAndFlora(int chunk_num, Terrain terrain, Flora flora) {
+	private void addTerrainFlora(int chunk_num, Terrain terrain, Flora flora) {
 		int minX = chunk_num * chunkSize;
 		int maxX = minX + chunkSize;
 		List<GameObject> list = new ArrayList<>();
@@ -153,7 +148,7 @@ public class PepseGameManager extends GameManager {
 	 *
 	 * @param chunk_num The chunk index to remove.
 	 */
-	private void removeTerrainAndFlora(int chunk_num) {
+	private void removeTerrainFlora(int chunk_num) {
 		for (GameObject object : loadedChunks.get(chunk_num)) {
 			gameObjects().removeGameObject(object);
 		}
@@ -187,7 +182,7 @@ public class PepseGameManager extends GameManager {
 
 		for (int i = currChunk - range; i <= currChunk + range; i++) {
 			if (!loadedChunks.containsKey(i)) {
-				addTerrainAndFlora(i, terrain, flora);
+				addTerrainFlora(i, terrain, flora);
 			}
 		}
 
@@ -198,7 +193,7 @@ public class PepseGameManager extends GameManager {
 			}
 		}
 		for (int chunkNum : toRemove) {
-			removeTerrainAndFlora(chunkNum);
+			removeTerrainFlora(chunkNum);
 		}
 	}
 }

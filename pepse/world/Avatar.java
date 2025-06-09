@@ -31,6 +31,24 @@ public class Avatar extends GameObject {
 	private static final float JUMP_ENERGY = 10;
 	private static final float MAX_ENERGY = 100;
 
+	private static final String IDLE_PHOTO_PATH_0 = "assets/idle_0.png";
+	private static final String IDLE_PHOTO_PATH_1 = "assets/idle_1.png";
+	private static final String IDLE_PHOTO_PATH_2 = "assets/idle_2.png";
+	private static final String IDLE_PHOTO_PATH_3 = "assets/idle_3.png";
+
+	private static final String RUN_PHOTO_PATH_0 = "assets/run_0.png";
+	private static final String RUN_PHOTO_PATH_1 = "assets/run_1.png";
+	private static final String RUN_PHOTO_PATH_2 = "assets/run_2.png";
+	private static final String RUN_PHOTO_PATH_3 = "assets/run_3.png";
+	private static final String RUN_PHOTO_PATH_4 = "assets/run_4.png";
+	private static final String RUN_PHOTO_PATH_5 = "assets/run_5.png";
+
+	private static final String JUMP_PHOTO_PATH_0 = "assets/jump_0.png";
+	private static final String JUMP_PHOTO_PATH_1 = "assets/jump_1.png";
+	private static final String JUMP_PHOTO_PATH_2 = "assets/jump_2.png";
+	private static final String JUMP_PHOTO_PATH_3 = "assets/jump_3.png";
+	private static final String GROUND_TAG = "ground";
+
 	private UserInputListener inputListener;
 	AnimationRenderable idleAnimation, runAnimation, jumpAnimation;
 
@@ -56,28 +74,28 @@ public class Avatar extends GameObject {
 		this.inputListener = inputListener;
 
 		Renderable[] idleImages = {
-				imageReader.readImage("assets/idle_0.png", false),
-				imageReader.readImage("assets/idle_1.png", false),
-				imageReader.readImage("assets/idle_2.png", false),
-				imageReader.readImage("assets/idle_3.png", false)
+				imageReader.readImage(IDLE_PHOTO_PATH_0, false),
+				imageReader.readImage(IDLE_PHOTO_PATH_1, false),
+				imageReader.readImage(IDLE_PHOTO_PATH_2, false),
+				imageReader.readImage(IDLE_PHOTO_PATH_3, false)
 		};
 		this.idleAnimation = new AnimationRenderable(idleImages, TIME_BETWEEN_CLIPS);
 
 		Renderable[] runImages = {
-				imageReader.readImage("assets/run_0.png", false),
-				imageReader.readImage("assets/run_1.png", false),
-				imageReader.readImage("assets/run_2.png", false),
-				imageReader.readImage("assets/run_3.png", false),
-				imageReader.readImage("assets/run_4.png", false),
-				imageReader.readImage("assets/run_5.png", false)
+				imageReader.readImage(RUN_PHOTO_PATH_0, false),
+				imageReader.readImage(RUN_PHOTO_PATH_1, false),
+				imageReader.readImage(RUN_PHOTO_PATH_2, false),
+				imageReader.readImage(RUN_PHOTO_PATH_3, false),
+				imageReader.readImage(RUN_PHOTO_PATH_4, false),
+				imageReader.readImage(RUN_PHOTO_PATH_5, false)
 		};
 		this.runAnimation = new AnimationRenderable(runImages, TIME_BETWEEN_CLIPS);
 
 		Renderable[] jumpImages = {
-				imageReader.readImage("assets/jump_0.png", false),
-				imageReader.readImage("assets/jump_1.png", false),
-				imageReader.readImage("assets/jump_2.png", false),
-				imageReader.readImage("assets/jump_3.png", false)
+				imageReader.readImage(JUMP_PHOTO_PATH_0, false),
+				imageReader.readImage(JUMP_PHOTO_PATH_1, false),
+				imageReader.readImage(JUMP_PHOTO_PATH_2, false),
+				imageReader.readImage(JUMP_PHOTO_PATH_3, false)
 		};
 		this.jumpAnimation = new AnimationRenderable(jumpImages, TIME_BETWEEN_CLIPS);
 
@@ -191,7 +209,7 @@ public class Avatar extends GameObject {
 	 */
 	public void onCollisionEnter(GameObject other, Collision collision) {
 		super.onCollisionEnter(other, collision);
-		if (other.getTag().equals("ground")) {
+		if (other.getTag().equals(GROUND_TAG)) {
 			this.transform().setVelocityY(0);
 		}
 	}

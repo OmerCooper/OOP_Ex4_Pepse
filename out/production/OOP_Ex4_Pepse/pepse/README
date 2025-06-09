@@ -1,0 +1,25 @@
+rotemge98,omerstats
+207446378,206901555
+
+1. the classes we created are:
+Transition- creates the callback functions for the movement of the leaves (size and rotation).
+Fruit- creates a fruit, extends gameObject.
+it is a class by its own in order to handle the collusion with the avatar (when eaten) inside the fruit itself.
+Takes a Consumer<Float> as a callback to update the avatar’s energy.
+Flora- the orgenizer class , that creates all the flora, trees and leaves as regular GameObjects, and Fruits.
+uses random with a global seed from the pepse class, that also depends on location to suppot infinite world.
+
+2) flora uses Fruits while creating them,
+and uses transition with callbacks to the functions in order to handle the leaves movement. 
+Fruit is decoupled from the Avatar class by using a callback avatar::addEnergy to increase
+ the avatar's energy on collusion.
+
+3)we used callback pattern for decupling: used in the fruit eating handling.
+we gave the flora and then the fruit callback to the addEnergy function of avatar.
+the fruit used this callback in its collusion method to add energy to the avatar.
+we also used the call back with the transition class. we created those movement function in this class,
+and gave it as callback to the flora class to use on the leaves.
+We also maintain the OOP Principles of 
+Encapsulation: Flora hides the internal details of how trees are built.
+Abstraction: Fruit abstracts over the idea of an energy-giving item.
+Polymorphism: Fruit overrides onCollisionEnter() to provide its own behavior.
