@@ -65,9 +65,12 @@ public class PepseGameManager extends GameManager {
 		// Sky
 		gameObjects().addGameObject(Sky.create(windowDimensions), Layer.BACKGROUND);
 
-		// Terrain and flora
+		// Terrain
 		terrain = new Terrain(windowController.getWindowDimensions(), 1);
-		flora = new Flora(terrain, 1);
+		// Avatar
+		createAvatar(imageReader,inputListener);
+		// flora
+		flora = new Flora(terrain, 1,avatar::addEnergy);
 		chunkSize = (int) windowController.getWindowDimensions().x() / 2;
 		for (int i = -1; i <= 1; i++) {
 			addTerrainAndFlora(i, terrain, flora);
@@ -82,8 +85,7 @@ public class PepseGameManager extends GameManager {
 		GameObject sunHalo = SunHalo.create(sun);
 		gameObjects().addGameObject(sunHalo, Layer.BACKGROUND + 2);
 
-		// Avatar
-		createAvatar(imageReader,inputListener);
+
 
 		// Cloud
 		Cloud cloud = new Cloud();
@@ -105,6 +107,7 @@ public class PepseGameManager extends GameManager {
 		this.avatar = new Avatar(Vector2.of(STARTING_X,
 				terrain.groundHeightAt(STARTING_X) - Avatar.AVATAR_HEIGHT), inputListener, imageReader);
 		setCamera(new Camera(avatar, Vector2.ZERO, windowDimensions, windowDimensions));
+		avatar.setTag("avatar");
 		gameObjects().addGameObject(avatar, Layer.DEFAULT);
 	}
 

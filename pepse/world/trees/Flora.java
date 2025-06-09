@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Consumer;
+
 /**
  * TODO add class explenation
  *
@@ -32,21 +34,23 @@ public class Flora {
 	private static final int MAX_TRUNK_HEIGHT = 5;
 	private static final int MIN_TRUNK_HEIGHT = 3;
 	private static final float TREES_PROB = 0.1f;
-	private static final float LEAF_PROB = 0.8f;
+	private static final float LEAF_PROB = 0.7f;
 	private static final String LEAF_TAG = "leaf";
 	private static final String TRUNK_TAG = "trunk";
 	private Random random = new Random();
 	private Terrain terrain;
 	private int seed;
+	private final Consumer<Float> addEnergyFunc;
 
 	/**
 	 * constructor that just use the terrain
 	 *
 	 * @param terrain .
 	 */
-	public Flora(Terrain terrain, int seed) {
+	public Flora(Terrain terrain, int seed, Consumer<Float> addEnergy) {
 		this.terrain = terrain;
 		this.seed = seed;
+		this.addEnergyFunc=addEnergy;
 
 	}
 
@@ -88,7 +92,7 @@ public class Flora {
 					// create fruits where there are no leaves in high prob
 					if (random1.nextFloat() > LEAF_PROB) {
 						if (random1.nextFloat() < LEAF_PROB) {
-							treeParts.add(FruitFactory.createFruit(leafPos));
+							treeParts.add(new Fruit(leafPos,addEnergyFunc));
 						}
 					} else {
 						GameObject leaf = new GameObject(leafPos, new Vector2(LEAF_SIZE, LEAF_SIZE),
